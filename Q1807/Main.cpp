@@ -1,9 +1,15 @@
+#include <map>
 #include <string>
 #include <vector>
 
 using namespace std;
 
 string evaluate(string s, vector<vector<string>>& knowledge) {
+  map<string, string> dict;
+  for (vector<string>& term : knowledge) {
+    dict.insert({term[0], term[1]});
+  }
+
   auto it = s.begin() - s.begin();
   const auto bg = s.begin();
   while (true) {
@@ -13,17 +19,10 @@ string evaluate(string s, vector<vector<string>>& knowledge) {
       break;
     }
     string key_i = s.substr(lbrack + 1, (rbrack - lbrack) - 1);
-    bool found = false;
     string value_i;
-    for (auto p : knowledge) {
-      if (p[0] == key_i) {
-        found = true;
-        value_i = p[1];
-        break;
-      }
-    }
-    if (found) {
-      s.replace(lbrack, (rbrack - lbrack) + 1, value_i);
+    map<string, string>::iterator fd = dict.find(key_i);
+    if (fd != dict.end()) {  // found
+      s.replace(lbrack, (rbrack - lbrack) + 1, fd->second);
     } else {
       s.replace(lbrack, (rbrack - lbrack) + 1, "?");
     }
